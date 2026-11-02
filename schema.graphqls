@@ -1,0 +1,54 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  products: [Product!]! @cost(weight: "10")
+  branches: [Branch!]! @cost(weight: "10")
+  sales: [Sale!]! @cost(weight: "10")
+  saleByFilter(id: Int, productId: Int, branchId: Int): [Sale!]!
+    @cost(weight: "10")
+}
+
+type Mutation {
+  newProduct(input: NewProductInput!): Product! @cost(weight: "10")
+}
+
+type Branch {
+  id: Int!
+  name: String!
+  city: String!
+}
+
+type Product {
+  id: Int!
+  name: String!
+  price: Int!
+  stock: Int!
+}
+
+type Sale {
+  id: Int!
+  productId: Int!
+  quantity: Int!
+  branchId: Int!
+}
+
+input NewProductInput {
+  name: String!
+  price: Int!
+  stock: Int!
+}
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost(
+  "The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc."
+  weight: String!
+) on
+  | SCALAR
+  | OBJECT
+  | FIELD_DEFINITION
+  | ARGUMENT_DEFINITION
+  | ENUM
+  | INPUT_FIELD_DEFINITION
